@@ -4,17 +4,26 @@ const apiUrl =
 const searchBox = document.querySelector(".search input");
 const searchBtn = document.querySelector(".search button");
 const weatherIcon = document.querySelector(".weather-icon");
+const themeLink = document.querySelector(".theme");
+const wrapper = document.querySelector(".wrapper");
+
+themeLink.addEventListener("click", function () {
+    wrapper.classList.toggle("dark-theme");
+    if (wrapper.classList.contains("dark-theme")) {
+        themeLink.querySelector("img").src = "images/light-mode.svg";
+    } else {
+        themeLink.querySelector("img").src = "images/dark-mode.svg";
+    }
+});
 
 async function checkWeather(city) {
     const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-
     if (response.status == 404) {
         document.querySelector(".error").style.display = "block";
         document.querySelector(".weather").style.display = "none";
     } else {
         var data = await response.json();
 
-        console.log(data);
         document.querySelector(".city").innerHTML = data.name;
         document.querySelector(".temp").innerHTML =
             Math.round(data.main.temp) + "°C";
@@ -41,6 +50,11 @@ async function checkWeather(city) {
 
 searchBtn.addEventListener("click", () => {
     checkWeather(searchBox.value);
+});
+searchBox.addEventListener("keydown", (event) => {
+    if (event.key == "Enter") {
+        checkWeather(searchBox.value);
+    }
 });
 
 checkWeather();
